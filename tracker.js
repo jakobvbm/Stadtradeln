@@ -21,14 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let animationId = null;
     let domThresh = parseInt(domThresholdInput.value);
 
-    // Audio Sounds
-    const tritteSound = new Audio('Sounds/100_tritte.mp3');
-    const kiloSound = new Audio('Sounds/1_kilometer.mp3');
+    // Audio Sounds (mit Cache-Buster, falls die Dateien überschrieben wurden)
+    const tritteSound = new Audio('Sounds/100_tritte.mp3?v=' + Date.now());
+    const kiloSound = new Audio('Sounds/1_kilometer.mp3?v=' + Date.now());
 
     // Tracking logic (Full Round Detection)
     let pedalState = 'UNKNOWN'; // 'UP', 'DOWN'
     let extremeY = -1;
-    const HYSTERESIS = 15; // Pixel movement required to change direction
+    const HYSTERESIS = 45; // Erhöht von 15 auf 45, um halbe Umdrehungen und Zittern zu ignorieren
     
     let pedalStrokes = 0;
     let lastStrokeTime = 0;
@@ -192,8 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function registerStroke() {
         const now = Date.now();
-        // Debounce to prevent multiple counts for a single stroke (min 300ms between strokes)
-        if (now - lastStrokeTime > 300) {
+        // Debounce erhöht auf 550ms, um versehentliche Doppelzählungen bei einer Umdrehung zu vermeiden
+        if (now - lastStrokeTime > 550) {
             pedalStrokes++;
             pedalCountEl.innerText = pedalStrokes;
             fsPedalsEl.innerText = pedalStrokes;
