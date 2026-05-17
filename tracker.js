@@ -24,6 +24,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // Audio Sounds (mit Cache-Buster, falls die Dateien überschrieben wurden)
     const tritteSound = new Audio('Sounds/100_tritte.mp3?v=' + Date.now());
     const kiloSound = new Audio('Sounds/1_kilometer.mp3?v=' + Date.now());
+    let audioUnlocked = false;
+
+    function unlockAudio() {
+        if (audioUnlocked) return;
+        [tritteSound, kiloSound].forEach(sound => {
+            sound.volume = 0; // Kurz stumm schalten
+            const playPromise = sound.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    sound.pause();
+                    sound.currentTime = 0;
+                    sound.volume = 1; // Lautstärke wiederherstellen
+                }).catch(() => {
+                    sound.volume = 1;
+                });
+            } else {
+                sound.volume = 1;
+            }
+        });
+        audioUnlocked = true;
+        document.removeEventListener('touchstart', unlockAudio);
+        document.removeEventListener('click', unlockAudio);
+    }
+
+    // Mobile Browser (insbesondere iOS) erfordern eine Benutzerinteraktion, um Audio abzuspielen.
+    document.addEventListener('touchstart', unlockAudio);
+    document.addEventListener('click', unlockAudio);
 
     // Tracking logic (Full Round Detection)
     let pedalState = 'UNKNOWN'; // 'UP', 'DOWN'
