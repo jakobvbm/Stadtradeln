@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Stats
     const pedalCountEl = document.getElementById('pedalCount');
     const distanceKmEl = document.getElementById('distanceKm');
+    const fsPedalsEl = document.getElementById('fsPedals');
+    const fsKmEl = document.getElementById('fsKm');
 
     // State
     let isTracking = false;
@@ -26,6 +28,28 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let pedalStrokes = 0;
     let lastStrokeTime = 0;
+    let lastKm = 0;
+
+    // Mario Sound Function
+    function playMarioLevelComplete() {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const notes = [392.00, 523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 1318.51];
+        const timings = [0, 0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1.2]; // seconds
+        const duration = 0.15;
+
+        notes.forEach((freq, index) => {
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + timings[index]);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime + timings[index]);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + timings[index] + duration);
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            osc.start(audioCtx.currentTime + timings[index]);
+            osc.stop(audioCtx.currentTime + timings[index] + duration);
+        });
+    }
 
     // Listeners for sliders
     domThresholdInput.addEventListener('input', (e) => {
@@ -189,10 +213,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (now - lastStrokeTime > 300) {
             pedalStrokes++;
             pedalCountEl.innerText = pedalStrokes;
+            fsPedalsEl.innerText = pedalStrokes;
             
             // 1 stroke = 3 meters = 0.003 km
             const distance = pedalStrokes * 0.003;
-            distanceKmEl.innerText = distance.toFixed(2);
+            const distanceStr = distance.toFixed(2);
+            distanceKmEl.innerText = distanceStr;
+            fsKmEl.innerText = distanceStr;
+
+            // Speech Synthesis every 100 strokes
+            if (pedalStrokes % 100 === 0 && pedalStrokes > 0) {
+                const msg = new SpeechSynthesisUtterance("Einhundert");
+                msg.lang = 'de-DE';
+                window.speechSynthesis.speak(msg);
+            }
+
+            // Mario Sound every full Kilometer
+            const currentKm = Math.floor(distance);
+            if (currentKm > lastKm) {
+                lastKm = currentKm;
+                playMarioLevelComplete();
+            }
 
             lastStrokeTime = now;
 
