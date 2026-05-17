@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "App im Edge-Browser starten",
+            "file": "${workspaceFolder}/index.html"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "App im Chrome-Browser starten",
+            "file": "${workspaceFolder}/index.html"
+        }
+    ]
+}

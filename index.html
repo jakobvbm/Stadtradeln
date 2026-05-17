@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stadtradeln Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Rad-Tracker <span class="accent">Pro</span></h1>
+            <p>Dein stationäres Fahrrad, digitalisiert.</p>
+        </header>
+
+        <main>
+            <div class="video-section">
+                <div class="video-container">
+                    <video id="videoElement" autoplay playsinline muted loop></video>
+                    <canvas id="trackingCanvas"></canvas>
+                    <div class="status-overlay" id="statusOverlay">Warte auf Kamera...</div>
+                </div>
+                <div class="controls">
+                    <button id="startBtn" class="btn primary">Kamera Starten</button>
+                    <div class="file-upload-wrapper">
+                        <button id="uploadBtn" class="btn secondary">Video Testen</button>
+                        <input type="file" id="videoUpload" accept="video/mp4,video/x-m4v,video/*">
+                    </div>
+                    <button id="fullscreenBtn" class="btn secondary">⛶ Vollbild</button>
+                </div>
+                
+                <div class="calibration">
+                    <h3>Rot-Empfindlichkeit</h3>
+                    <div class="sliders">
+                        <div class="slider-group">
+                            <label>Strenge der Erkennung (Aktuell: <span id="domVal">50</span>)</label>
+                            <input type="range" id="domThreshold" min="10" max="150" value="50">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon">🚴</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="pedalCount">0</div>
+                        <div class="stat-label">Trittfrequenz (Gesamt)</div>
+                    </div>
+                </div>
+                <div class="stat-card highlight">
+                    <div class="stat-icon">🛣️</div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="distanceKm">0.00</div>
+                        <div class="stat-label">Kilometer</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="tracker.js"></script>
+</body>
+</html>
