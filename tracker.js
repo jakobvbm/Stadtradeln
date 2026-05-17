@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Tracking logic (Full Round Detection)
     let pedalState = 'UNKNOWN'; // 'UP', 'DOWN'
     let extremeY = -1;
-    const HYSTERESIS = 40; // Pixel movement required to change direction
+    const HYSTERESIS = 15; // Pixel movement required to change direction
     
     let pedalStrokes = 0;
     let lastStrokeTime = 0;
